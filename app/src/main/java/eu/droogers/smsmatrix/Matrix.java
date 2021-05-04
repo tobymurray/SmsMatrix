@@ -186,13 +186,13 @@ public class Matrix {
 
                             changeDisplayname(info, getContactName(phoneNumber, context));
                             Room room = store.getRoom(info);
-                            SendMesageToRoom(room, body, type);
+                            SendMessageToRoom(room, body, type);
                         }
                     });
                 }
             } else {
                 changeDisplayname(room.getRoomId(), getContactName(phoneNumber, context));
-                SendMesageToRoom(room, body, type);
+                SendMessageToRoom(room, body, type);
             }
         } else {
             Log.e(tag, "Error with sending message");
@@ -255,7 +255,7 @@ public class Matrix {
         });
     }
 
-    public void SendMesageToRoom(Room room, String body, String type) {
+    public void SendMessageToRoom(Room room, String body, String type) {
         Message msg = new Message();
         msg.body = body;
         msg.msgtype = type;
