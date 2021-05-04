@@ -13,6 +13,8 @@ import android.widget.EditText;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Arrays;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
@@ -59,50 +61,46 @@ public class MainActivity extends Activity {
 
 
         Button saveButton = findViewById(R.id.button_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!checkPermissions()) {
-                    askPermissions();
-                } else {
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("botUsername", botUsername.getText().toString());
-                    editor.putString("botPassword", botPassword.getText().toString());
-                    editor.putString("username", username.getText().toString());
-                    editor.putString("device", device.getText().toString());
-                    editor.putString("hsUrl", hsUrl.getText().toString());
-                    editor.putString("syncDelay", syncDelay.getText().toString());
-                    editor.putString("syncTimeout", syncTimeout.getText().toString());
-                    editor.apply();
+        saveButton.setOnClickListener(v -> {
+            if (missingRequiredPermission()) {
+                askPermissions();
+            } else {
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("botUsername", botUsername.getText().toString());
+                editor.putString("botPassword", botPassword.getText().toString());
+                editor.putString("username", username.getText().toString());
+                editor.putString("device", device.getText().toString());
+                editor.putString("hsUrl", hsUrl.getText().toString());
+                editor.putString("syncDelay", syncDelay.getText().toString());
+                editor.putString("syncTimeout", syncTimeout.getText().toString());
+                editor.apply();
 
-                    Log.e(TAG, "onClick: " + botUsername.getText().toString());
-                    startService();
-                }
-
+                Log.e(TAG, "onClick: " + botUsername.getText().toString());
+                startService();
             }
+
         });
-        if (!checkPermissions()) {
+        if (missingRequiredPermission()) {
             askPermissions();
         } else {
             startService();
         }
     }
 
-    private boolean checkPermissions() {
+    private boolean missingRequiredPermission() {
         for (String permission : PERMISSIONS_REQUIRED) {
-            int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return false;
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                Log.w(TAG, "Required permission " + permission + " has not been granted");
+                return true;
             }
-            Log.i(TAG, "setOnClickListener - result result result" + result);
         }
-        return true;
+        Log.d(TAG, "All required permissions have been granted: " + Arrays.toString(PERMISSIONS_REQUIRED));
+        return false;
     }
 
     private void askPermissions() {
         ActivityCompat.requestPermissions(this, PERMISSIONS_REQUIRED, PERMISSION_REQUEST_CODE);
     }
-
 
     private void startService() {
         Intent intent = new Intent(this, MatrixService.class);
