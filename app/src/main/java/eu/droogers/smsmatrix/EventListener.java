@@ -20,7 +20,7 @@ import java.util.List;
 public class EventListener implements IMXEventListener {
     private static final String TAG = "EventListener";
     private boolean loaded = false;
-    private Matrix mx;
+    private final Matrix mx;
 
     public EventListener(Matrix mx) {
         this.mx = mx;

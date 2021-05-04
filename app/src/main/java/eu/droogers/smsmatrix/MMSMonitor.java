@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MMSMonitor {
-    private MatrixService mainActivity;
+    private final MatrixService mainActivity;
     private ContentResolver contentResolver = null;
-    private Context mainContext;
+    private final Context mainContext;
     private Handler mmshandler = null;
     private ContentObserver mmsObserver = null;
     public boolean monitorStatus = false;

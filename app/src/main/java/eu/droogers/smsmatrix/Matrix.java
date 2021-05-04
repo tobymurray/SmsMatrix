@@ -47,16 +47,16 @@ public class Matrix {
     Context context;
     MXSession session;
     int transaction;
-    private String tag = "Matrix";
-    private List<NotSendMessage> notSendMessages = new ArrayList<>();
+    private final String tag = "Matrix";
+    private final List<NotSendMessage> notSendMessages = new ArrayList<>();
     MXDataHandler dh;
     private IMXEventListener evLis;
     IMXStore store;
     String deviceName;
-    private String botUsername;
-    private String botHSUrl;
+    private final String botUsername;
+    private final String botHSUrl;
 
-    private String realUserid;
+    private final String realUserid;
 
     // Message type constants.
     public static final String MESSAGE_TYPE_TEXT = "m.text";

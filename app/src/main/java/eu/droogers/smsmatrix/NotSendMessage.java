@@ -5,9 +5,9 @@ package eu.droogers.smsmatrix;
  */
 
 class NotSendMessage {
-    private String type;
-    private String phone;
-    private String body;
+    private final String type;
+    private final String phone;
+    private final String body;
 
     public NotSendMessage(String phone, String body, String type) {
         this.phone = phone;
