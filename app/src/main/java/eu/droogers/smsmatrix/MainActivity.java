@@ -23,7 +23,6 @@ import static android.Manifest.permission.SEND_SMS;
 import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity {
-    static Matrix mx;
     private SharedPreferences sp;
     private EditText botUsername;
     private EditText botPassword;
