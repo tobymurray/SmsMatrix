@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * Created by gerben on 8-10-17.
  */
-
 public class EventListener implements IMXEventListener {
     private static final String TAG = "EventListener";
     private boolean loaded = false;
@@ -27,178 +26,114 @@ public class EventListener implements IMXEventListener {
     }
 
     @Override
-    public void onStoreReady() {
-
-    }
+    public void onStoreReady() {}
 
     @Override
-    public void onPresenceUpdate(Event event, User user) {
-
-    }
+    public void onPresenceUpdate(Event event, User user) {}
 
     @Override
-    public void onAccountInfoUpdate(MyUser myUser) {
-
-    }
+    public void onAccountInfoUpdate(MyUser myUser) {}
 
     @Override
-    public void onIgnoredUsersListUpdate() {
-
-    }
+    public void onIgnoredUsersListUpdate() {}
 
     @Override
-    public void onDirectMessageChatRoomsListUpdate() {
-
-    }
+    public void onDirectMessageChatRoomsListUpdate() {}
 
     @Override
     public void onLiveEvent(Event event, RoomState roomState) {
+        Log.d(TAG, "onLiveEvent: event[" + event + "], roomState[" + roomState +"], loaded[" + loaded +"]");
         if (loaded) {
-//            mx.getUnreadEvents();
             mx.sendEvent(event);
         }
-        Log.e(TAG, "onLiveEvent: " + event);
     }
 
     @Override
-    public void onLiveEventsChunkProcessed(String s, String s1) {
-
-    }
+    public void onLiveEventsChunkProcessed(String s, String s1) {}
 
     @Override
-    public void onBingEvent(Event event, RoomState roomState, BingRule bingRule) {
-
-    }
+    public void onBingEvent(Event event, RoomState roomState, BingRule bingRule) {}
 
     @Override
-    public void onEventSentStateUpdated(Event event) {
-
-    }
+    public void onEventSentStateUpdated(Event event) {}
 
     @Override
-    public void onEventSent(Event event, String s) {
-
-    }
+    public void onEventSent(Event event, String s) {}
 
     @Override
-    public void onEventDecrypted(String s, String s1) {
-
-    }
+    public void onEventDecrypted(String s, String s1) {}
 
     @Override
-    public void onBingRulesUpdate() {
-
-    }
+    public void onBingRulesUpdate() {}
 
     @Override
     public void onInitialSyncComplete(String s) {
+        Log.d(TAG, "onInitialSyncComplete: " + s);
         loaded = true;
         mx.onEventStreamLoaded();
         mx.getUnreadEvents();
     }
 
     @Override
-    public void onSyncError(MatrixError matrixError) {
-
-    }
+    public void onSyncError(MatrixError matrixError) {}
 
     @Override
-    public void onCryptoSyncComplete() {
-
-    }
+    public void onCryptoSyncComplete() {}
 
     @Override
-    public void onNewRoom(String s) {
-
-    }
+    public void onNewRoom(String s) {}
 
     @Override
-    public void onJoinRoom(String s) {
-
-    }
+    public void onJoinRoom(String s) {}
 
     @Override
-    public void onRoomFlush(String s) {
-
-    }
+    public void onRoomFlush(String s) {}
 
     @Override
-    public void onRoomInternalUpdate(String s) {
-
-    }
+    public void onRoomInternalUpdate(String s) {}
 
     @Override
-    public void onNotificationCountUpdate(String s) {
-
-    }
+    public void onNotificationCountUpdate(String s) {}
 
     @Override
-    public void onLeaveRoom(String s) {
-
-    }
+    public void onLeaveRoom(String s) {}
 
     @Override
-    public void onRoomKick(String s) {
-
-    }
+    public void onRoomKick(String s) {}
 
     @Override
-    public void onReceiptEvent(String s, List<String> list) {
-
-    }
+    public void onReceiptEvent(String s, List<String> list) {}
 
     @Override
-    public void onRoomTagEvent(String s) {
-
-    }
+    public void onRoomTagEvent(String s) {}
 
     @Override
-    public void onReadMarkerEvent(String s) {
-
-    }
+    public void onReadMarkerEvent(String s) {}
 
     @Override
-    public void onToDeviceEvent(Event event) {
-
-    }
+    public void onToDeviceEvent(Event event) {}
 
     @Override
-    public void onNewGroupInvitation(String s) {
-
-    }
+    public void onNewGroupInvitation(String s) {}
 
     @Override
-    public void onJoinGroup(String s) {
-
-    }
+    public void onJoinGroup(String s) {}
 
     @Override
-    public void onLeaveGroup(String s) {
-
-    }
+    public void onLeaveGroup(String s) {}
 
     @Override
-    public void onGroupProfileUpdate(String s) {
-
-    }
+    public void onGroupProfileUpdate(String s) {}
 
     @Override
-    public void onGroupRoomsListUpdate(String s) {
-
-    }
+    public void onGroupRoomsListUpdate(String s) {}
 
     @Override
-    public void onGroupUsersListUpdate(String s) {
-
-    }
+    public void onGroupUsersListUpdate(String s) {}
 
     @Override
-    public void onGroupInvitedUsersListUpdate(String s) {
-
-    }
+    public void onGroupInvitedUsersListUpdate(String s) {}
 
     @Override
-    public void onAccountDataUpdated(AccountDataElement accountDataElement) {
-
-    }
+    public void onAccountDataUpdated(AccountDataElement accountDataElement) {}
 }
