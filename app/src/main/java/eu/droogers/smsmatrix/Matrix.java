@@ -1,19 +1,14 @@
 package eu.droogers.smsmatrix;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import org.json.JSONException;
 
 import org.matrix.androidsdk.HomeServerConnectionConfig;
 import org.matrix.androidsdk.MXDataHandler;
@@ -54,7 +49,7 @@ public class Matrix {
     MXSession session;
     int transaction;
     private String tag = "Matrix";
-    private List<NotSendMesage> notSendMesages = new ArrayList<>();
+    private List<NotSendMessage> notSendMessages = new ArrayList<>();
     MXDataHandler dh;
     private IMXEventListener evLis;
     IMXStore store;
@@ -202,7 +197,7 @@ public class Matrix {
             }
         } else {
             Log.e(tag, "Error with sending message");
-            notSendMesages.add(new NotSendMesage(phoneNumber, body, type));
+            notSendMessages.add(new NotSendMessage(phoneNumber, body, type));
         }
     }
 
@@ -346,12 +341,12 @@ public class Matrix {
 
 
     public void onEventStreamLoaded() {
-        sendMessageList(notSendMesages);
-        notSendMesages.clear();
+        sendMessageList(notSendMessages);
+        notSendMessages.clear();
     }
 
-    public void sendMessageList(List<NotSendMesage> messages) {
-        for (NotSendMesage ms : messages) {
+    public void sendMessageList(List<NotSendMessage> messages) {
+        for (NotSendMessage ms : messages) {
             sendMessage(ms.getPhone(), ms.getBody(), ms.getType());
         }
     }
