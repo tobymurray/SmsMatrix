@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,7 +41,7 @@ public class MatrixService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (mChannelId.isEmpty()) {
                 mChannelId = createNotificationChannel("sync", "Sync Service");
             }
@@ -67,7 +66,7 @@ public class MatrixService extends Service {
 
         if (mx == null && !botUsername.isEmpty() && !botPassword.isEmpty() && !username.isEmpty() && !device.isEmpty() && !hsUrl.isEmpty() && !syncDelay.isEmpty() && !syncTimeout.isEmpty()) {
             mx = new Matrix(getApplication(), hsUrl, botUsername, botPassword, username, device, syncDelay, syncTimeout);
-            Log.e(TAG, "onStartCommand: " + hsUrl );
+            Log.e(TAG, "onStartCommand: " + hsUrl);
             Toast.makeText(this, "service starting:", Toast.LENGTH_SHORT).show();
         } else if (mx == null) {
             Toast.makeText(this, "Missing Information", Toast.LENGTH_SHORT).show();
@@ -79,8 +78,7 @@ public class MatrixService extends Service {
         String type = intent.getStringExtra("SendSms_type");
         if (phone != null) {
             System.out.println(phone);
-            if (type.equals(Matrix.MESSAGE_TYPE_TEXT) || type.equals(Matrix.MESSAGE_TYPE_NOTICE))
-            {
+            if (type.equals(Matrix.MESSAGE_TYPE_TEXT) || type.equals(Matrix.MESSAGE_TYPE_NOTICE)) {
                 String body = intent.getStringExtra("SendSms_body");
                 mx.sendMessage(phone, body, type);
             } else if (type.equals(Matrix.MESSAGE_TYPE_IMAGE) || type.equals(Matrix.MESSAGE_TYPE_VIDEO)) {
@@ -92,7 +90,7 @@ public class MatrixService extends Service {
         }
 
         if (this.mms == null) {
-            this.mms = new MMSMonitor(this , getApplicationContext());
+            this.mms = new MMSMonitor(this, getApplicationContext());
             this.mms.startMMSMonitoring();
         }
 
@@ -101,7 +99,7 @@ public class MatrixService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private String createNotificationChannel(String channelId, String channelName){
+    private String createNotificationChannel(String channelId, String channelName) {
         NotificationChannel chan = new NotificationChannel(channelId,
                 channelName, NotificationManager.IMPORTANCE_NONE);
         chan.setLightColor(Color.BLUE);

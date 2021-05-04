@@ -21,12 +21,11 @@ public class ReceiverListener extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
+        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             handleIncomingSMS(context, intent);
         } else if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
             handleIncomingCall(context, intent);
-        }
-        else if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        } else if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             Intent intentServ = new Intent(context, MatrixService.class);
             ContextCompat.startForegroundService(context, intentServ);
         }
@@ -47,7 +46,7 @@ public class ReceiverListener extends BroadcastReceiver {
 
                 // Send long SMS of same sender in one message
                 for (int i = 0; i < nbrOfpdus; i++) {
-                    msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                    msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 
                     String originatinAddress = msgs[i].getOriginatingAddress();
 
@@ -74,7 +73,7 @@ public class ReceiverListener extends BroadcastReceiver {
         String cal_state = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
         String cal_from = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
         String body = cal_from;
-        switch(cal_state){
+        switch (cal_state) {
             case "IDLE":
                 body += " end call";
                 break;

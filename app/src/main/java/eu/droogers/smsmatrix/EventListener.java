@@ -2,11 +2,11 @@ package eu.droogers.smsmatrix;
 
 import android.util.Log;
 
+import org.matrix.androidsdk.core.model.MatrixError;
 import org.matrix.androidsdk.data.MyUser;
 import org.matrix.androidsdk.data.RoomState;
 import org.matrix.androidsdk.listeners.IMXEventListener;
 import org.matrix.androidsdk.rest.model.Event;
-import org.matrix.androidsdk.core.model.MatrixError;
 import org.matrix.androidsdk.rest.model.User;
 import org.matrix.androidsdk.rest.model.bingrules.BingRule;
 import org.matrix.androidsdk.rest.model.sync.AccountDataElement;
@@ -22,7 +22,7 @@ public class EventListener implements IMXEventListener {
     private boolean loaded = false;
     private Matrix mx;
 
-    public EventListener (Matrix mx) {
+    public EventListener(Matrix mx) {
         this.mx = mx;
     }
 

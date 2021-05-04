@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
     private EditText syncDelay;
     private EditText syncTimeout;
     private static final String[] PERMISSIONS_REQUIRED = new String[]{
-        READ_SMS, SEND_SMS, RECEIVE_SMS, READ_PHONE_STATE, READ_CONTACTS, READ_EXTERNAL_STORAGE
+            READ_SMS, SEND_SMS, RECEIVE_SMS, READ_PHONE_STATE, READ_CONTACTS, READ_EXTERNAL_STORAGE
     };
     private static final int PERMISSION_REQUEST_CODE = 200;
 
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
                     editor.putString("syncTimeout", syncTimeout.getText().toString());
                     editor.apply();
 
-                    Log.e(TAG, "onClick: " + botUsername.getText().toString() );
+                    Log.e(TAG, "onClick: " + botUsername.getText().toString());
                     startService();
                 }
 
@@ -91,9 +91,9 @@ public class MainActivity extends Activity {
     }
 
     private boolean checkPermissions() {
-        for (String permission: PERMISSIONS_REQUIRED) {
+        for (String permission : PERMISSIONS_REQUIRED) {
             int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
-            if (result  != PackageManager.PERMISSION_GRANTED) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
             Log.i(TAG, "setOnClickListener - result result result" + result);

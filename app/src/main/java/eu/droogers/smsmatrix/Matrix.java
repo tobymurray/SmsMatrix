@@ -7,12 +7,13 @@ import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-
 import com.google.gson.JsonObject;
 
 import org.matrix.androidsdk.HomeServerConnectionConfig;
 import org.matrix.androidsdk.MXDataHandler;
 import org.matrix.androidsdk.MXSession;
+import org.matrix.androidsdk.core.callback.SimpleApiCallback;
+import org.matrix.androidsdk.core.model.MatrixError;
 import org.matrix.androidsdk.data.Room;
 import org.matrix.androidsdk.data.store.IMXStore;
 import org.matrix.androidsdk.data.store.IMXStoreListener;
@@ -20,13 +21,11 @@ import org.matrix.androidsdk.data.store.MXFileStore;
 import org.matrix.androidsdk.data.store.MXMemoryStore;
 import org.matrix.androidsdk.listeners.IMXEventListener;
 import org.matrix.androidsdk.listeners.MXMediaUploadListener;
-import org.matrix.androidsdk.core.callback.SimpleApiCallback;
-import org.matrix.androidsdk.core.model.MatrixError;
 import org.matrix.androidsdk.rest.client.LoginRestClient;
 import org.matrix.androidsdk.rest.model.CreatedEvent;
 import org.matrix.androidsdk.rest.model.Event;
-import org.matrix.androidsdk.rest.model.message.Message;
 import org.matrix.androidsdk.rest.model.login.Credentials;
+import org.matrix.androidsdk.rest.model.message.Message;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -87,6 +86,7 @@ public class Matrix {
 
             @Override
             public void onSuccess(Credentials credentials) {
+                Log.i(TAG, "onLogin onSuccess");
                 onLogin(credentials);
             }
 
@@ -134,7 +134,6 @@ public class Matrix {
         Log.e(TAG, "onLogin:" + session.getSyncTimeout());
 
 
-
         if (store.isReady()) {
             session.startEventStream(store.getEventStreamToken());
             session.getDataHandler().addListener(evLis);
@@ -153,7 +152,7 @@ public class Matrix {
 
                 @Override
                 public void onStoreCorrupted(String s, String s1) {
-                    Log.e(TAG, "onStoreCorrupted: " + s  );
+                    Log.e(TAG, "onStoreCorrupted: " + s);
                 }
 
                 @Override
@@ -174,7 +173,7 @@ public class Matrix {
             Room room = getRoomByPhonenumber(phoneNumber);
             if (room == null) {
                 if (!type.equals("m.notice")) {
-                    Log.e(TAG, "sendMessage: not found" );
+                    Log.e(TAG, "sendMessage: not found");
                     session.createDirectMessageRoom(realUserid, new SimpleApiCallback<String>() {
                         @Override
                         public void onSuccess(String info) {
@@ -202,46 +201,45 @@ public class Matrix {
     }
 
     public void sendFile(
-        final String phoneNumber,
-        final byte[] body,
-        final String type,
-        final String fileName,
-        final String contentType
+            final String phoneNumber,
+            final byte[] body,
+            final String type,
+            final String fileName,
+            final String contentType
     ) {
         String uploadID = String.valueOf(transaction);
         transaction++;
         session.getMediaCache().uploadContent(
-            new ByteArrayInputStream(body),
-            fileName,
-            contentType,
-            uploadID,
-            new MXMediaUploadListener()
-            {
-                @Override
-                public void onUploadComplete(final String uploadId, final String contentUri) {
-                    Room room = getRoomByPhonenumber(phoneNumber);
-                    JsonObject json = new JsonObject();
-                    json.addProperty("body", fileName);
-                    json.addProperty("msgtype", type);
-                    json.addProperty("url", contentUri);
-                    JsonObject info = new JsonObject();
-                    info.addProperty("mimetype", contentType);
-                    json.add("info", info);
-                    session.getRoomsApiClient().sendEventToRoom(
-                        String.valueOf(transaction),
-                        room.getRoomId(),
-                        "m.room.message",
-                        json,
-                        new SimpleApiCallback<CreatedEvent>() {
-                            @Override
-                            public void onSuccess(CreatedEvent createdEvent) {
+                new ByteArrayInputStream(body),
+                fileName,
+                contentType,
+                uploadID,
+                new MXMediaUploadListener() {
+                    @Override
+                    public void onUploadComplete(final String uploadId, final String contentUri) {
+                        Room room = getRoomByPhonenumber(phoneNumber);
+                        JsonObject json = new JsonObject();
+                        json.addProperty("body", fileName);
+                        json.addProperty("msgtype", type);
+                        json.addProperty("url", contentUri);
+                        JsonObject info = new JsonObject();
+                        info.addProperty("mimetype", contentType);
+                        json.add("info", info);
+                        session.getRoomsApiClient().sendEventToRoom(
+                                String.valueOf(transaction),
+                                room.getRoomId(),
+                                "m.room.message",
+                                json,
+                                new SimpleApiCallback<CreatedEvent>() {
+                                    @Override
+                                    public void onSuccess(CreatedEvent createdEvent) {
 
-                            }
-                        }
-                    );
-                    transaction++;
+                                    }
+                                }
+                        );
+                        transaction++;
+                    }
                 }
-            }
         );
     }
 
@@ -264,16 +262,19 @@ public class Matrix {
         session.getRoomsApiClient().sendMessage(String.valueOf(transaction), room.getRoomId(), msg, new SimpleApiCallback<CreatedEvent>() {
             @Override
             public void onSuccess(CreatedEvent createdEvent) {
-                    Log.e(TAG, "sendMessage success");
+                Log.e(TAG, "sendMessage success");
             }
+
             @Override
             public void onMatrixError(MatrixError e) {
                 Log.e(TAG, "sendMessage MatrixError" + e);
             }
+
             @Override
             public void onNetworkError(Exception e) {
                 Log.e(TAG, "sendMessage Network error" + e);
             }
+
             @Override
             public void onUnexpectedError(Exception e) {
                 Log.e(TAG, "sendMessage Unexpected error" + e);
@@ -300,7 +301,7 @@ public class Matrix {
             Room room = store.getRoom(event.roomId);
             SmsManager smsManager = SmsManager.getDefault();
             JsonObject json = event.getContent().getAsJsonObject();
-            
+
             if (event.type.equals("m.room.message")) {
                 if (json.get("msgtype").getAsString().equals(MESSAGE_TYPE_TEXT)) {
                     ArrayList<String> body = smsManager.divideMessage(json.get("body").getAsString());
@@ -351,12 +352,12 @@ public class Matrix {
         }
     }
 
-    private Room getRoomByPhonenumber (String number) {
+    private Room getRoomByPhonenumber(String number) {
         Collection<Room> rooms = store.getRooms();
-        Log.e(TAG, "getRoomByPhonenumber: " + number );
-        Log.e(TAG, "getRoomByPhonenumber: " + rooms.size() );
+        Log.e(TAG, "getRoomByPhonenumber: " + number);
+        Log.e(TAG, "getRoomByPhonenumber: " + rooms.size());
         for (Room room : rooms) {
-            Log.e(TAG, "getRoomByPhonenumber: " + room.getTopic() );
+            Log.e(TAG, "getRoomByPhonenumber: " + room.getTopic());
             if (room.getTopic() != null && room.getTopic().equals(number)) {
                 return room;
             }
@@ -364,18 +365,17 @@ public class Matrix {
         return null;
     }
 
-    private String getContactName(final String phoneNumber, Context context)
-    {
-        Uri uri=Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(phoneNumber));
+    private String getContactName(final String phoneNumber, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
 
         String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
 
-        String contactName="";
-        Cursor cursor=context.getContentResolver().query(uri,projection,null,null,null);
+        String contactName = "";
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
 
         if (cursor != null) {
-            if(cursor.moveToFirst()) {
-                contactName=cursor.getString(0);
+            if (cursor.moveToFirst()) {
+                contactName = cursor.getString(0);
             }
             cursor.close();
         }

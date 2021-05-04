@@ -39,19 +39,19 @@ public class MMSMonitor {
             monitorStatus = false;
             if (!monitorStatus) {
                 contentResolver.registerContentObserver(
-                    Uri.parse("content://mms"),
-                    true,
-                    mmsObserver
+                        Uri.parse("content://mms"),
+                        true,
+                        mmsObserver
                 );
 
                 // Save the count of MMS messages on start-up.
                 Uri uriMMSURI = Uri.parse("content://mms-sms");
                 Cursor mmsCur = mainActivity.getContentResolver().query(
-                    uriMMSURI,
-                    null,
-                    Telephony.Mms.MESSAGE_BOX + " = " + Telephony.Mms.MESSAGE_BOX_INBOX,
-                    null,
-                    Telephony.Mms._ID
+                        uriMMSURI,
+                        null,
+                        Telephony.Mms.MESSAGE_BOX + " = " + Telephony.Mms.MESSAGE_BOX_INBOX,
+                        null,
+                        Telephony.Mms._ID
                 );
                 if (mmsCur != null && mmsCur.getCount() > 0) {
                     mmsCount = mmsCur.getCount();
@@ -67,7 +67,7 @@ public class MMSMonitor {
     public void stopMMSMonitoring() {
         try {
             monitorStatus = false;
-            if (!monitorStatus){
+            if (!monitorStatus) {
                 contentResolver.unregisterContentObserver(mmsObserver);
             }
         } catch (Exception e) {
@@ -85,6 +85,7 @@ public class MMSMonitor {
 
     class MMSObserver extends ContentObserver {
         private Handler mms_handle = null;
+
         public MMSObserver(final Handler mmshandle) {
             super(mmshandle);
             mms_handle = mmshandle;
@@ -104,11 +105,11 @@ public class MMSMonitor {
                 // Get the MMS count.
                 Uri uriMMSURI = Uri.parse("content://mms/");
                 Cursor mmsCur = mainActivity.getContentResolver().query(
-                    uriMMSURI,
-                    null,
-                    Telephony.Mms.MESSAGE_BOX + " = " + Telephony.Mms.MESSAGE_BOX_INBOX,
-                    null,
-                    Telephony.Mms._ID
+                        uriMMSURI,
+                        null,
+                        Telephony.Mms.MESSAGE_BOX + " = " + Telephony.Mms.MESSAGE_BOX_INBOX,
+                        null,
+                        Telephony.Mms._ID
                 );
 
                 int currMMSCount = 0;
@@ -137,11 +138,11 @@ public class MMSMonitor {
                     // Get parts.
                     Uri uriMMSPart = Uri.parse("content://mms/part");
                     Cursor curPart = mainActivity.getContentResolver().query(
-                        uriMMSPart,
-                        null,
-                        Telephony.Mms.Part.MSG_ID + " = " + id,
-                        null,
-                        Telephony.Mms.Part._ID
+                            uriMMSPart,
+                            null,
+                            Telephony.Mms.Part.MSG_ID + " = " + id,
+                            null,
+                            Telephony.Mms.Part._ID
                     );
                     Log.d(TAG, "Parts records length = " + curPart.getCount());
                     curPart.moveToLast();
@@ -152,11 +153,10 @@ public class MMSMonitor {
                         Log.d(TAG, "partId = " + partId);
                         Log.d(TAG, "Part mime type = " + contentType);
 
-                        if (contentType.equalsIgnoreCase("text/plain"))
-                        {
+                        if (contentType.equalsIgnoreCase("text/plain")) {
                             // Get the message.
 
-                            Log.i(TAG,"==== Get the message start ====");
+                            Log.i(TAG, "==== Get the message start ====");
                             messageType = Matrix.MESSAGE_TYPE_TEXT;
                             byte[] messageData = readMMSPart(partId);
                             if (messageData != null && messageData.length > 0) {
@@ -165,20 +165,19 @@ public class MMSMonitor {
 
                             if (message.isEmpty()) {
                                 Cursor curPart1 = mainActivity.getContentResolver().query(
-                                    uriMMSPart,
-                                    null,
-                                    Telephony.Mms.Part.MSG_ID + " = " + id + " and "+ Telephony.Mms.Part._ID + " = " + partId,
-                                    null,
-                                    Telephony.Mms.Part._ID
+                                        uriMMSPart,
+                                        null,
+                                        Telephony.Mms.Part.MSG_ID + " = " + id + " and " + Telephony.Mms.Part._ID + " = " + partId,
+                                        null,
+                                        Telephony.Mms.Part._ID
                                 );
-                                for (int i = 0; i < curPart1.getColumnCount(); i++)
-                                {
-                                    Log.d(TAG,"Column Name : " + curPart1.getColumnName(i));
+                                for (int i = 0; i < curPart1.getColumnCount(); i++) {
+                                    Log.d(TAG, "Column Name : " + curPart1.getColumnName(i));
                                 }
                                 curPart1.moveToLast();
                                 message = curPart1.getString(13);
                             }
-                            Log.d(TAG,"Txt Message = " + message);
+                            Log.d(TAG, "Txt Message = " + message);
                         } else if (isImageType(contentType) || isVideoType(contentType)) {
                             // Get the media.
 
@@ -195,19 +194,18 @@ public class MMSMonitor {
                     } while (curPart.moveToPrevious());
 
 
-
                     // Get the sender's address.
                     Uri uriMMSAddr = Uri.parse("content://mms/" + id + "/addr");
                     Cursor addrCur = mainActivity.getContentResolver().query(
-                        uriMMSAddr,
-                        null,
-                        Telephony.Mms.Addr.TYPE + " = 137",     // PduHeaders.FROM
-                        null,
-                        Telephony.Mms.Addr._ID
+                            uriMMSAddr,
+                            null,
+                            Telephony.Mms.Addr.TYPE + " = 137",     // PduHeaders.FROM
+                            null,
+                            Telephony.Mms.Addr._ID
                     );
                     if (addrCur != null) {
                         addrCur.moveToLast();
-                        do{
+                        do {
                             Log.d(TAG, "addrCur records length = " + addrCur.getCount());
                             if (addrCur.getCount() > 0) {
                                 address = addrCur.getString(addrCur.getColumnIndex(Telephony.Mms.Addr.ADDRESS));
@@ -219,12 +217,12 @@ public class MMSMonitor {
                             }
                             if (mediaData != null) {
                                 Utilities.sendMatrix(
-                                    mainActivity,
-                                    mediaData,
-                                    address,
-                                    messageType,
-                                    fileName,
-                                    fileType
+                                        mainActivity,
+                                        mediaData,
+                                        address,
+                                        messageType,
+                                        fileName,
+                                        fileType
                                 );
                             }
                         } while (addrCur.moveToPrevious());
@@ -246,7 +244,7 @@ public class MMSMonitor {
 
         try {
 
-            Log.i(TAG,"Entered into readMMSPart try.");
+            Log.i(TAG, "Entered into readMMSPart try.");
             ContentResolver mContentResolver = mainActivity.getContentResolver();
             is = mContentResolver.openInputStream(partURI);
 
@@ -277,10 +275,10 @@ public class MMSMonitor {
     private boolean isImageType(String mime) {
         boolean result = false;
         if (mime.equalsIgnoreCase("image/jpg")
-            || mime.equalsIgnoreCase("image/jpeg")
-            || mime.equalsIgnoreCase("image/png")
-            || mime.equalsIgnoreCase("image/gif")
-            || mime.equalsIgnoreCase("image/bmp")) {
+                || mime.equalsIgnoreCase("image/jpeg")
+                || mime.equalsIgnoreCase("image/png")
+                || mime.equalsIgnoreCase("image/gif")
+                || mime.equalsIgnoreCase("image/bmp")) {
             result = true;
         }
         return result;
@@ -290,11 +288,11 @@ public class MMSMonitor {
     private boolean isVideoType(String mime) {
         boolean result = false;
         if (mime.equalsIgnoreCase("video/3gpp")
-            || mime.equalsIgnoreCase("video/3gpp2")
-            || mime.equalsIgnoreCase("video/avi")
-            || mime.equalsIgnoreCase("video/mp4")
-            || mime.equalsIgnoreCase("video/mpeg")
-            || mime.equalsIgnoreCase("video/webm")) {
+                || mime.equalsIgnoreCase("video/3gpp2")
+                || mime.equalsIgnoreCase("video/avi")
+                || mime.equalsIgnoreCase("video/mp4")
+                || mime.equalsIgnoreCase("video/mpeg")
+                || mime.equalsIgnoreCase("video/webm")) {
             result = true;
         }
         return result;
